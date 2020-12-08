@@ -1,6 +1,8 @@
 %{
   open Mml
 
+  let res = { globals = []; functions = [] }
+
 %}
 
 %token <int> CST
@@ -26,11 +28,11 @@
 %%
 (* A program is made of functions and globals variables and finish with EOF token (FIN) *)
 prog:
-| v = var_decl prog
-    { (ajoute_glob test v) }
-| f = fun_decl prog
-    { (ajoute_fun test f) }
-| FIN { test }
+| v = var_decl p=prog
+    {(ajoute_glob p v) }
+| f = fun_decl p=prog
+    { (ajoute_fun p f) }
+| FIN { {globals = []; functions = []} }
 | error
     { let pos = $startpos in
       let message = Printf.sprintf
