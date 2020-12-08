@@ -1,0 +1,542 @@
+State 0:
+prog' -> . prog [ # ]
+-- On error shift to state 1
+-- On TYPE shift to state 2
+-- On FIN shift to state 68
+-- On var_decl shift to state 69
+-- On prog shift to state 73
+-- On fun_decl shift to state 71
+
+State 1:
+prog -> error . [ # ]
+-- On # reduce production prog -> error 
+
+State 2:
+fun_decl -> TYPE . IDENT PAR_O param PAR_F ACC_O list(instr) ACC_F [ error TYPE FIN ]
+var_decl -> TYPE . IDENT EGAL expr SEMI [ error TYPE FIN ]
+var_decl -> TYPE . IDENT SEMI [ error TYPE FIN ]
+-- On IDENT shift to state 3
+
+State 3:
+fun_decl -> TYPE IDENT . PAR_O param PAR_F ACC_O list(instr) ACC_F [ error TYPE FIN ]
+var_decl -> TYPE IDENT . EGAL expr SEMI [ error TYPE FIN ]
+var_decl -> TYPE IDENT . SEMI [ error TYPE FIN ]
+-- On SEMI shift to state 4
+-- On PAR_O shift to state 5
+-- On EGAL shift to state 65
+
+State 4:
+var_decl -> TYPE IDENT SEMI . [ error TYPE FIN ]
+-- On error reduce production var_decl -> TYPE IDENT SEMI 
+-- On TYPE reduce production var_decl -> TYPE IDENT SEMI 
+-- On FIN reduce production var_decl -> TYPE IDENT SEMI 
+
+State 5:
+fun_decl -> TYPE IDENT PAR_O . param PAR_F ACC_O list(instr) ACC_F [ error TYPE FIN ]
+-- On TYPE shift to state 6
+-- On param shift to state 10
+-- On PAR_F reduce production param -> 
+
+State 6:
+param -> TYPE . IDENT [ PAR_F ]
+param -> TYPE . IDENT VIRG param [ PAR_F ]
+-- On IDENT shift to state 7
+
+State 7:
+param -> TYPE IDENT . [ PAR_F ]
+param -> TYPE IDENT . VIRG param [ PAR_F ]
+-- On VIRG shift to state 8
+-- On PAR_F reduce production param -> TYPE IDENT 
+
+State 8:
+param -> TYPE IDENT VIRG . param [ PAR_F ]
+-- On TYPE shift to state 6
+-- On param shift to state 9
+-- On PAR_F reduce production param -> 
+
+State 9:
+param -> TYPE IDENT VIRG param . [ PAR_F ]
+-- On PAR_F reduce production param -> TYPE IDENT VIRG param 
+
+State 10:
+fun_decl -> TYPE IDENT PAR_O param . PAR_F ACC_O list(instr) ACC_F [ error TYPE FIN ]
+-- On PAR_F shift to state 11
+
+State 11:
+fun_decl -> TYPE IDENT PAR_O param PAR_F . ACC_O list(instr) ACC_F [ error TYPE FIN ]
+-- On ACC_O shift to state 12
+
+State 12:
+fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O . list(instr) ACC_F [ error TYPE FIN ]
+-- On WHILE shift to state 13
+-- On RETURN shift to state 36
+-- On PRINT shift to state 39
+-- On IF shift to state 44
+-- On IDENT shift to state 49
+-- On list(instr) shift to state 63
+-- On instr shift to state 59
+-- On ACC_F reduce production list(instr) -> 
+
+State 13:
+instr -> WHILE . PAR_O expr PAR_F ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 14
+
+State 14:
+instr -> WHILE PAR_O . expr PAR_F ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 33
+
+State 15:
+expr_simple -> PAR_O . expr PAR_F [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 31
+
+State 16:
+expr -> IDENT . PAR_O param2 PAR_F [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr_simple -> IDENT . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 17
+-- On VIRG reduce production expr_simple -> IDENT 
+-- On SEMI reduce production expr_simple -> IDENT 
+-- On PLUS reduce production expr_simple -> IDENT 
+-- On PAR_F reduce production expr_simple -> IDENT 
+-- On INF reduce production expr_simple -> IDENT 
+-- On ETOILE reduce production expr_simple -> IDENT 
+
+State 17:
+expr -> IDENT PAR_O . param2 PAR_F [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On param2 shift to state 19
+-- On expr_simple shift to state 21
+-- On expr shift to state 22
+-- On PAR_F reduce production param2 -> 
+
+State 18:
+expr_simple -> CST . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On VIRG reduce production expr_simple -> CST 
+-- On SEMI reduce production expr_simple -> CST 
+-- On PLUS reduce production expr_simple -> CST 
+-- On PAR_F reduce production expr_simple -> CST 
+-- On INF reduce production expr_simple -> CST 
+-- On ETOILE reduce production expr_simple -> CST 
+
+State 19:
+expr -> IDENT PAR_O param2 . PAR_F [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_F shift to state 20
+
+State 20:
+expr -> IDENT PAR_O param2 PAR_F . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On VIRG reduce production expr -> IDENT PAR_O param2 PAR_F 
+-- On SEMI reduce production expr -> IDENT PAR_O param2 PAR_F 
+-- On PLUS reduce production expr -> IDENT PAR_O param2 PAR_F 
+-- On PAR_F reduce production expr -> IDENT PAR_O param2 PAR_F 
+-- On INF reduce production expr -> IDENT PAR_O param2 PAR_F 
+-- On ETOILE reduce production expr -> IDENT PAR_O param2 PAR_F 
+
+State 21:
+expr -> expr_simple . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On VIRG reduce production expr -> expr_simple 
+-- On SEMI reduce production expr -> expr_simple 
+-- On PLUS reduce production expr -> expr_simple 
+-- On PAR_F reduce production expr -> expr_simple 
+-- On INF reduce production expr -> expr_simple 
+-- On ETOILE reduce production expr -> expr_simple 
+
+State 22:
+expr -> expr . PLUS expr [ VIRG PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ VIRG PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ VIRG PLUS PAR_F INF ETOILE ]
+param2 -> expr . [ PAR_F ]
+param2 -> expr . VIRG param2 [ PAR_F ]
+-- On VIRG shift to state 23
+-- On PLUS shift to state 25
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+-- On PAR_F reduce production param2 -> expr 
+
+State 23:
+param2 -> expr VIRG . param2 [ PAR_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On param2 shift to state 24
+-- On expr_simple shift to state 21
+-- On expr shift to state 22
+-- On PAR_F reduce production param2 -> 
+
+State 24:
+param2 -> expr VIRG param2 . [ PAR_F ]
+-- On PAR_F reduce production param2 -> expr VIRG param2 
+
+State 25:
+expr -> expr PLUS . expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 26
+
+State 26:
+expr -> expr . PLUS expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr PLUS expr . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+-- On VIRG reduce production expr -> expr PLUS expr 
+-- On SEMI reduce production expr -> expr PLUS expr 
+-- On PLUS reduce production expr -> expr PLUS expr 
+-- On PAR_F reduce production expr -> expr PLUS expr 
+
+State 27:
+expr -> expr INF . expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 28
+
+State 28:
+expr -> expr . PLUS expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr INF expr . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On ETOILE shift to state 29
+-- On VIRG reduce production expr -> expr INF expr 
+-- On SEMI reduce production expr -> expr INF expr 
+-- On PLUS reduce production expr -> expr INF expr 
+-- On PAR_F reduce production expr -> expr INF expr 
+
+State 29:
+expr -> expr ETOILE . expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 30
+
+State 30:
+expr -> expr . PLUS expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr ETOILE expr . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On VIRG reduce production expr -> expr ETOILE expr 
+-- On SEMI reduce production expr -> expr ETOILE expr 
+-- On PLUS reduce production expr -> expr ETOILE expr 
+-- On PAR_F reduce production expr -> expr ETOILE expr 
+-- On INF reduce production expr -> expr ETOILE expr 
+-- On ETOILE reduce production expr -> expr ETOILE expr 
+
+State 31:
+expr -> expr . PLUS expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ PLUS PAR_F INF ETOILE ]
+expr_simple -> PAR_O expr . PAR_F [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On PLUS shift to state 25
+-- On PAR_F shift to state 32
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 32:
+expr_simple -> PAR_O expr PAR_F . [ VIRG SEMI PLUS PAR_F INF ETOILE ]
+-- On VIRG reduce production expr_simple -> PAR_O expr PAR_F 
+-- On SEMI reduce production expr_simple -> PAR_O expr PAR_F 
+-- On PLUS reduce production expr_simple -> PAR_O expr PAR_F 
+-- On PAR_F reduce production expr_simple -> PAR_O expr PAR_F 
+-- On INF reduce production expr_simple -> PAR_O expr PAR_F 
+-- On ETOILE reduce production expr_simple -> PAR_O expr PAR_F 
+
+State 33:
+expr -> expr . PLUS expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ PLUS PAR_F INF ETOILE ]
+instr -> WHILE PAR_O expr . PAR_F ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PLUS shift to state 25
+-- On PAR_F shift to state 34
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 34:
+instr -> WHILE PAR_O expr PAR_F . ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_O shift to state 35
+
+State 35:
+instr -> WHILE PAR_O expr PAR_F ACC_O . list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE shift to state 13
+-- On RETURN shift to state 36
+-- On PRINT shift to state 39
+-- On IF shift to state 44
+-- On IDENT shift to state 49
+-- On list(instr) shift to state 61
+-- On instr shift to state 59
+-- On ACC_F reduce production list(instr) -> 
+
+State 36:
+instr -> RETURN . expr SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 37
+
+State 37:
+expr -> expr . PLUS expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . ETOILE expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . INF expr [ SEMI PLUS INF ETOILE ]
+instr -> RETURN expr . SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On SEMI shift to state 38
+-- On PLUS shift to state 25
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 38:
+instr -> RETURN expr SEMI . [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE reduce production instr -> RETURN expr SEMI 
+-- On RETURN reduce production instr -> RETURN expr SEMI 
+-- On PRINT reduce production instr -> RETURN expr SEMI 
+-- On IF reduce production instr -> RETURN expr SEMI 
+-- On IDENT reduce production instr -> RETURN expr SEMI 
+-- On ACC_F reduce production instr -> RETURN expr SEMI 
+
+State 39:
+instr -> PRINT . PAR_O expr PAR_F SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 40
+
+State 40:
+instr -> PRINT PAR_O . expr PAR_F SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 41
+
+State 41:
+expr -> expr . PLUS expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ PLUS PAR_F INF ETOILE ]
+instr -> PRINT PAR_O expr . PAR_F SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PLUS shift to state 25
+-- On PAR_F shift to state 42
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 42:
+instr -> PRINT PAR_O expr PAR_F . SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On SEMI shift to state 43
+
+State 43:
+instr -> PRINT PAR_O expr PAR_F SEMI . [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+-- On RETURN reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+-- On PRINT reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+-- On IF reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+-- On IDENT reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+-- On ACC_F reduce production instr -> PRINT PAR_O expr PAR_F SEMI 
+
+State 44:
+instr -> IF . PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 45
+
+State 45:
+instr -> IF PAR_O . expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 46
+
+State 46:
+expr -> expr . PLUS expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . ETOILE expr [ PLUS PAR_F INF ETOILE ]
+expr -> expr . INF expr [ PLUS PAR_F INF ETOILE ]
+instr -> IF PAR_O expr . PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PLUS shift to state 25
+-- On PAR_F shift to state 47
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 47:
+instr -> IF PAR_O expr PAR_F . ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_O shift to state 48
+
+State 48:
+instr -> IF PAR_O expr PAR_F ACC_O . list(instr) ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE shift to state 13
+-- On RETURN shift to state 36
+-- On PRINT shift to state 39
+-- On IF shift to state 44
+-- On IDENT shift to state 49
+-- On list(instr) shift to state 53
+-- On instr shift to state 59
+-- On ACC_F reduce production list(instr) -> 
+
+State 49:
+instr -> IDENT . EGAL expr SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On EGAL shift to state 50
+
+State 50:
+instr -> IDENT EGAL . expr SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 51
+
+State 51:
+expr -> expr . PLUS expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . ETOILE expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . INF expr [ SEMI PLUS INF ETOILE ]
+instr -> IDENT EGAL expr . SEMI [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On SEMI shift to state 52
+-- On PLUS shift to state 25
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 52:
+instr -> IDENT EGAL expr SEMI . [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE reduce production instr -> IDENT EGAL expr SEMI 
+-- On RETURN reduce production instr -> IDENT EGAL expr SEMI 
+-- On PRINT reduce production instr -> IDENT EGAL expr SEMI 
+-- On IF reduce production instr -> IDENT EGAL expr SEMI 
+-- On IDENT reduce production instr -> IDENT EGAL expr SEMI 
+-- On ACC_F reduce production instr -> IDENT EGAL expr SEMI 
+
+State 53:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) . ACC_F ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_F shift to state 54
+
+State 54:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F . ELSE ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ELSE shift to state 55
+
+State 55:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE . ACC_O list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_O shift to state 56
+
+State 56:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O . list(instr) ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE shift to state 13
+-- On RETURN shift to state 36
+-- On PRINT shift to state 39
+-- On IF shift to state 44
+-- On IDENT shift to state 49
+-- On list(instr) shift to state 57
+-- On instr shift to state 59
+-- On ACC_F reduce production list(instr) -> 
+
+State 57:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) . ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_F shift to state 58
+
+State 58:
+instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F . [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+-- On RETURN reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+-- On PRINT reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+-- On IF reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+-- On IDENT reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+-- On ACC_F reduce production instr -> IF PAR_O expr PAR_F ACC_O list(instr) ACC_F ELSE ACC_O list(instr) ACC_F 
+
+State 59:
+list(instr) -> instr . list(instr) [ ACC_F ]
+-- On WHILE shift to state 13
+-- On RETURN shift to state 36
+-- On PRINT shift to state 39
+-- On IF shift to state 44
+-- On IDENT shift to state 49
+-- On list(instr) shift to state 60
+-- On instr shift to state 59
+-- On ACC_F reduce production list(instr) -> 
+
+State 60:
+list(instr) -> instr list(instr) . [ ACC_F ]
+-- On ACC_F reduce production list(instr) -> instr list(instr) 
+
+State 61:
+instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) . ACC_F [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On ACC_F shift to state 62
+
+State 62:
+instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F . [ WHILE RETURN PRINT IF IDENT ACC_F ]
+-- On WHILE reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+-- On RETURN reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+-- On PRINT reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+-- On IF reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+-- On IDENT reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+-- On ACC_F reduce production instr -> WHILE PAR_O expr PAR_F ACC_O list(instr) ACC_F 
+
+State 63:
+fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O list(instr) . ACC_F [ error TYPE FIN ]
+-- On ACC_F shift to state 64
+
+State 64:
+fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O list(instr) ACC_F . [ error TYPE FIN ]
+-- On error reduce production fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O list(instr) ACC_F 
+-- On TYPE reduce production fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O list(instr) ACC_F 
+-- On FIN reduce production fun_decl -> TYPE IDENT PAR_O param PAR_F ACC_O list(instr) ACC_F 
+
+State 65:
+var_decl -> TYPE IDENT EGAL . expr SEMI [ error TYPE FIN ]
+-- On PAR_O shift to state 15
+-- On IDENT shift to state 16
+-- On CST shift to state 18
+-- On expr_simple shift to state 21
+-- On expr shift to state 66
+
+State 66:
+expr -> expr . PLUS expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . ETOILE expr [ SEMI PLUS INF ETOILE ]
+expr -> expr . INF expr [ SEMI PLUS INF ETOILE ]
+var_decl -> TYPE IDENT EGAL expr . SEMI [ error TYPE FIN ]
+-- On SEMI shift to state 67
+-- On PLUS shift to state 25
+-- On INF shift to state 27
+-- On ETOILE shift to state 29
+
+State 67:
+var_decl -> TYPE IDENT EGAL expr SEMI . [ error TYPE FIN ]
+-- On error reduce production var_decl -> TYPE IDENT EGAL expr SEMI 
+-- On TYPE reduce production var_decl -> TYPE IDENT EGAL expr SEMI 
+-- On FIN reduce production var_decl -> TYPE IDENT EGAL expr SEMI 
+
+State 68:
+prog -> FIN . [ # ]
+-- On # reduce production prog -> FIN 
+
+State 69:
+prog -> var_decl . prog [ # ]
+-- On error shift to state 1
+-- On TYPE shift to state 2
+-- On FIN shift to state 68
+-- On var_decl shift to state 69
+-- On prog shift to state 70
+-- On fun_decl shift to state 71
+
+State 70:
+prog -> var_decl prog . [ # ]
+-- On # reduce production prog -> var_decl prog 
+
+State 71:
+prog -> fun_decl . prog [ # ]
+-- On error shift to state 1
+-- On TYPE shift to state 2
+-- On FIN shift to state 68
+-- On var_decl shift to state 69
+-- On prog shift to state 72
+-- On fun_decl shift to state 71
+
+State 72:
+prog -> fun_decl prog . [ # ]
+-- On # reduce production prog -> fun_decl prog 
+
+State 73:
+prog' -> prog . [ # ]
+-- On # accept prog
+

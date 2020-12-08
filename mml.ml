@@ -1,3 +1,5 @@
+exception TypeError
+
 type typ =
     | Int
     | Bool
@@ -6,7 +8,6 @@ type typ =
 
 type expr =
   | Cst  of int
-  | Var of string
   | Add  of expr * expr
   | Mul  of expr * expr
   | Lt   of expr * expr
@@ -35,6 +36,43 @@ type prog = {
     globals:   (string * typ) list;
     functions: fun_def list;
   }
+
+
+
+
+let rec expr_type e env =
+  match e with
+  | Cst _ -> Int
+  | Get e -> List.assoc e env.locals
+  | Add(e1,e2) ->
+      if expr_type e1 env = Int
+      && expr_type e2 env = Int
+      then Int
+      else raise TypeError
+  | Mul(e1,e2) ->
+      if expr_type e1 env = Int
+      && expr_type e2 env = Int
+      then Int
+      else raise TypeError
+  | Lt(e1,e2) ->
+      if expr_type e1 env = Int
+      && expr_type e2 env = Int
+      then Int
+      else raise TypeError
+  |  Call(str, el) ->
+    let ret = env.return in
+    let loc = env.locals in
+    begin
+      if compareParam el loc env then ret else raise TypeError
+    end
+
+and compareParam l1 l2 env =
+    match l1,l2 with
+    | [] , [] -> true
+    | hd1::tl1 , hd2::tl2 ->
+        if expr_type hd1 env != snd hd2 then
+          raise TypeError else compareParam tl1 tl2 env
+    | _, _ -> false
 
 (* Our variables and functions keeper*)
 let test = {globals = []; functions = []}

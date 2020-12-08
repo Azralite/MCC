@@ -17,6 +17,7 @@
 %token FIN
 
 %left PLUS
+%nonassoc INF
 %left ETOILE
 
 %start prog
