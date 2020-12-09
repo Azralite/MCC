@@ -11,7 +11,10 @@ let affiche_type t =
 let rec affiche_param p =
   match p with
   | [] -> printf "\n"
-  | hd :: tl -> affiche_type (snd hd); printf " %s " (fst hd); affiche_param tl
+  | hd :: tl -> begin
+      let (s,t,i) = hd in
+      affiche_type t; printf " %s " s;printf "%d" i;  affiche_param tl
+    end
 
 let print_space i =
   let rec p_space j res =
@@ -79,9 +82,12 @@ let print_fun fu =
   printf "Locals : "; affiche_param fu.locals;
   printf "Code : \n   " ; printf "%s" (print_seq fu.code 3)
 
+let print_glob g =
+  affiche_param g; printf "\n"
 
 let affiche_fun prog =
   printf "\n";
+  print_glob prog.globals;
   let rec af_fun li =
     match li with
     | [] -> printf "\n"
