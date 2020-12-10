@@ -1,6 +1,6 @@
 {
   open Lexing
-  open Mmlparser
+  open Parser
 
   let keyword_or_ident =
     let h = Hashtbl.create 17 in

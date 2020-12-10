@@ -1,13 +1,11 @@
 %{
-  open Mml
-
-  let res = { globals = []; functions = [] }
+  open Ast
 
 %}
 
 %token <int> CST
 %token <string> IDENT
-%token <Mml.typ> TYPE
+%token <Ast.typ> TYPE
 %token PRINT
 %token IF ELSE WHILE
 %token RETURN
@@ -23,8 +21,8 @@
 %left ETOILE
 
 %start prog
-%type <Mml.prog> prog
-%type <Mml.expr> expr
+%type <Ast.prog> prog
+%type <Ast.expr> expr
 
 %%
 (* A program is made of functions and globals variables and finish with EOF token (FIN) *)
