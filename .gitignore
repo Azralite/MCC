@@ -1,3 +1,4 @@
 *.automaton
 *.conflicts
+*.native
 _build/
