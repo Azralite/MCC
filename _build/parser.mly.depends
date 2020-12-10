@@ -1,2 +1,0 @@
-parser.ml: Ast Lexing Printf
-parser.mli: Ast Lexing

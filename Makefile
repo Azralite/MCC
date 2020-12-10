@@ -6,10 +6,10 @@ OCB = ocamlbuild $(FLAGS)
 all : native
 
 native :
-	$(OCB) mmlc.native
+	$(OCB) main.native
 
 clean:
 	$(OCB) -clean
 
 test : native
-	./mmlc.native test.c
+	./main.native test.c
