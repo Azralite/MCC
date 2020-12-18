@@ -1,4 +1,4 @@
-Int PARAM 42
+Int a 0Int b 0Int c 0
 
 Nom : fact 
 Liste de parametre : Int n 0

@@ -1,9 +1,13 @@
-int PARAM = 5;
+int a = 12;
+int b = a;
+int c = b+1;
 
 int fact(int n) {
 	if (n < 2) {
+		int a = 2;
 		return 1;
 	} else {
+
 		return n * fact(n + -1);
 	}
 }
@@ -11,5 +15,6 @@ int fact(int n) {
 
 
 void main() {
+
 	putchar(fact(PARAM));
 }

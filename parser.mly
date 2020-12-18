@@ -1,6 +1,40 @@
 %{
   open Ast
 
+
+
+  let test = { globals = []; functions = [] }
+
+  let h = Hashtbl.create 42
+
+  let rec expr_type e  =
+    match e with
+    | Cst _ -> Int
+    | Get e -> if Hashtbl.mem h e then Hashtbl.find h e else failwith "erreur variable non déclaré"
+    | Add(e1,e2) ->
+        if expr_type e1  = Int
+        && expr_type e2  = Int
+        then Int
+        else raise TypeError
+    | Mul(e1,e2) ->
+        if expr_type e1  = Int
+        && expr_type e2  = Int
+        then Int
+        else raise TypeError
+    | Lt(e1,e2) ->
+        if expr_type e1  = Int
+        && expr_type e2  = Int
+        then Bool
+        else raise TypeError
+    |  Call(str, _) -> if Hashtbl.mem h str then Hashtbl.find h str else failwith "erreur fonction non déclaré"
+
+
+
+let fun_declaration id ty args =
+  let tmp = Hashtbl.create 42 in
+  tmp = Hashtbl.copy h
+
+
 %}
 
 %token <int> CST
@@ -31,7 +65,7 @@ prog:
     {(ajoute_glob p v) }
 | f = fun_decl p=prog
     { (ajoute_fun p f) }
-| FIN { {globals = []; functions = []} }
+| FIN { test }
 | error
     { let pos = $startpos in
       let message = Printf.sprintf
@@ -45,7 +79,10 @@ prog:
 (* A variable is made with a type an id and we can asign it a value and end with a semicolon*)
 var_decl:
 | t=TYPE i=IDENT EGAL e=expr SEMI
-    { match t with |Int ->(i,t,42) | _ -> failwith "eval of string dont work"}
+    { if expr_type e = t
+      then
+        begin Hashtbl.add h i t; (i,t,0) end
+      else failwith "erreur wrong type" }
 | t=TYPE i=IDENT SEMI
     { (i,t,0) }
 ;
@@ -64,7 +101,7 @@ instr:
   {Return e}
 (* IF ELSE instr *)
 | IF PAR_O c=expr PAR_F ACC_O e1=list(instr) ACC_F ELSE ACC_O  e2=list(instr) ACC_F
-    { If(c, e1, e2) }
+    { if expr_type c = Bool then If(c, e1, e2) else failwith "If condition not respected" }
 (* WHILE instr *)
 | WHILE PAR_O c=expr PAR_F ACC_O e=list(instr) ACC_F
   { While(c, e) }
@@ -74,6 +111,7 @@ instr:
 (* Set an variable with an value (from an expr)*)
 | i=IDENT EGAL e=expr SEMI
   { Set (i, e) }
+  (*TODO : déclaration de variables local dans une fct*)
 ;
 
 (*expr_simple is made of cst var and expr between parenthesis  *)

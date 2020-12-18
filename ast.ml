@@ -46,11 +46,11 @@ type prog = {
 
 
 
-(*
-let rec expr_type e env =
+
+(* let rec expr_type e env =
   match e with
   | Cst _ -> Int
-  | Get e -> List.assoc e env.locals
+  | Get e -> snd (List.assoc e env.locals)
   | Add(e1,e2) ->
       if expr_type e1 env = Int
       && expr_type e2 env = Int
@@ -64,7 +64,7 @@ let rec expr_type e env =
   | Lt(e1,e2) ->
       if expr_type e1 env = Int
       && expr_type e2 env = Int
-      then Int
+      then Bool
       else raise TypeError
   |  Call(str, el) ->
     let ret = env.return in
@@ -115,7 +115,7 @@ let rec eval expr env =
   | Add  (e1,e2) -> eval e1 env + eval e2 env
   | Mul  (e1,e2) -> eval e1 env * eval e2 env
   | Lt   (e1,e2) -> if (eval e1 env < eval e2 env) then 1 else 0
-  | Get  (s) -> find_env s env
+  | Get  (s) -> if Hashtbl.mem env s then Hashtbl.find env s else raise VarNotFound
   | Call (s, exprList) -> 0 (* TODO : A changer*)
 
 (*
