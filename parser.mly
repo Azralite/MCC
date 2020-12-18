@@ -1,11 +1,11 @@
 %{
-  open Mml
+  open Ast
 
 %}
 
 %token <int> CST
 %token <string> IDENT
-%token <Mml.typ> TYPE
+%token <Ast.typ> TYPE
 %token PRINT
 %token IF ELSE WHILE
 %token RETURN
@@ -17,19 +17,21 @@
 %token FIN
 
 %left PLUS
+%nonassoc INF
 %left ETOILE
 
 %start prog
-%type <Mml.prog> prog
+%type <Ast.prog> prog
+%type <Ast.expr> expr
 
 %%
 (* A program is made of functions and globals variables and finish with EOF token (FIN) *)
 prog:
-| v = var_decl prog
-    { (ajoute_glob test v) }
-| f = fun_decl prog
-    { (ajoute_fun test f) }
-| FIN { test }
+| v = var_decl p=prog
+    {(ajoute_glob p v) }
+| f = fun_decl p=prog
+    { (ajoute_fun p f) }
+| FIN { {globals = []; functions = []} }
 | error
     { let pos = $startpos in
       let message = Printf.sprintf
@@ -43,9 +45,9 @@ prog:
 (* A variable is made with a type an id and we can asign it a value and end with a semicolon*)
 var_decl:
 | t=TYPE i=IDENT EGAL e=expr SEMI
-    { (i,t) }
+    { match t with |Int ->(i,t,42) | _ -> failwith "eval of string dont work"}
 | t=TYPE i=IDENT SEMI
-    { (i,t) }
+    { (i,t,0) }
 ;
 
 (* A function is made with a type an id opening parenthese some parameters closing parenthesis and all the code is between two curly brakets *)
@@ -106,9 +108,9 @@ param2:
 param:
 | { [] }
 | t = TYPE i = IDENT
-  { [(i,t)] }
+  { [(i,t,0)] }
 | t = TYPE i = IDENT VIRG p = param
-  { (i,t)::p }
+  { (i,t,0)::p }
 ;
 
 

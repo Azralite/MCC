@@ -1,0 +1,29 @@
+Int PARAM 42
+
+Nom : fact 
+Liste de parametre : Int n 0
+Return : Int
+Locals : Int n 0
+Code : 
+   If(expr, seq, seq)
+      Lt(expr, expr)
+         Get n
+               Cst 2 
+            Return(expr)
+                   Cst 1 
+                 Return(expr)
+                        Mul(expr, expr)
+                            Get n
+                                  Call(fact,expr list)
+                                            Add(expr, expr)
+                                                Get n
+                                                      Cst -1 
+Nom : main 
+Liste de parametre : 
+Return : Void
+Locals : 
+Code : 
+   Printchar(expr)
+             Call(fact,expr list)
+                       Get PARAM
+

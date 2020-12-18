@@ -1,6 +1,6 @@
 {
   open Lexing
-  open Mmlparser
+  open Parser
 
   let keyword_or_ident =
     let h = Hashtbl.create 17 in
@@ -48,9 +48,9 @@ rule token = parse
       {FALSE}
       *)
   | digit as n
-      { Printf.printf "CST : %d\n" (int_of_string n); CST(int_of_string n) }
+      {CST(int_of_string n) }
   | ident as id
-      { Printf.printf "ID : %s " id;   keyword_or_ident id }
+      {keyword_or_ident id }
   | '+'   {  PLUS }
   | '*'   {  ETOILE }
   | '='   {  EGAL }
