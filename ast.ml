@@ -102,17 +102,38 @@ let get_local l1 l2 =
     | h1::d1 , h2::d2 -> gl d1 d2 (h1::h2::res)
   in gl l1 l2 []
 
-(*
+
+let rec find_env str li =
+  match li with
+  | [] -> raise Not_found
+  | hd::tl -> let (s,t,i) = hd in
+    if str = s then i else find_env str tl
+
 let rec eval expr env =
   match expr with
   | Cst n -> n
-  | Add  (e1,e2) -> eval e1 + eval e2
-  | Mul  (e1,e2) -> eval e1 * eval e2
-  | Lt   (e1,e2) -> eval e1 < eval e2
-  | Get  (s) -> if mem env s
-    then  find env s else raise VarNotFound
+  | Add  (e1,e2) -> eval e1 env + eval e2 env
+  | Mul  (e1,e2) -> eval e1 env * eval e2 env
+  | Lt   (e1,e2) -> if (eval e1 env < eval e2 env) then 1 else 0
+  | Get  (s) -> find_env s env
   | Call (s, exprList) -> 0 (* TODO : A changer*)
 
+(*
+let rec eval_instr instr env =
+  match instr with
+  | Putchar (e) -> Printf.printf "0" (*(eval e)*)
+  (* | Set (s,e) -> add_var s e env (*TODO : définir une fct qui ajoute une variable aux locals de la fct en cours*) *)
+  | If (e,s1,s2) -> if (eval e = 1) then eval_seq s1 env else eval_seq s2 env
+  | While   (e,s) -> if (eval e = 1) then eval_seq s env (*TODO : Modifier l'env pour eviter inf loop*)
+  | Return  (e) -> eval e env
+  | Expr  e -> eval e env *)
+
+
+  (* let rec eval_seq seq env =
+    match seq with
+    | [] ->
+    | hd::tl -> eval_instr ; eval seq env *)
+(*
 let rec substitution expr var expr2 =
   match expr with
   | Cst n -> Cst n

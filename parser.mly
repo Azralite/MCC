@@ -45,7 +45,7 @@ prog:
 (* A variable is made with a type an id and we can asign it a value and end with a semicolon*)
 var_decl:
 | t=TYPE i=IDENT EGAL e=expr SEMI
-    { match t with |Int ->(i,t,42) | _ -> failwith "eval of srting dont work"}
+    { match t with |Int ->(i,t,42) | _ -> failwith "eval of string dont work"}
 | t=TYPE i=IDENT SEMI
     { (i,t,0) }
 ;
