@@ -1,9 +1,18 @@
-Int a 0Int b 0Int c 0
+Variables Globales :
+Int a 
+Int b 
+Int c 
+
+
+Fonctions :
 
 Nom : fact 
-Liste de parametre : Int n 0
+Liste de parametre : 
+Int n 
+
 Return : Int
-Locals : Int n 0
+Locals : Int n 
+
 Code : 
    If(expr, seq, seq)
       Lt(expr, expr)
@@ -20,6 +29,7 @@ Code :
                                                       Cst 1 
 Nom : main 
 Liste de parametre : 
+
 Return : Void
 Locals : 
 Code : 

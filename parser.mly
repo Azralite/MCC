@@ -62,16 +62,16 @@ var_decl:
 | t=TYPE i=IDENT EGAL e=expr SEMI
     {  if expr_type e = t
       then
-        begin Hashtbl.add tt i t; (i,t,0) end
+        begin Hashtbl.add varTable i t; (i,t) end
       else failwith "erreur wrong type" }
 | t=TYPE i=IDENT SEMI
-    { (i,t,0) }
+    { (Hashtbl.add varTable i t ;(i,t)) }
 ;
 
 (* A function is made with a type an id opening parenthese some parameters closing parenthesis and all the code is between two curly brakets *)
 fun_decl:
 | t=TYPE i=IDENT PAR_O args=param PAR_F ACC_O co=list(instr) ACC_F
-    { {name = i; params = args; return = t; locals = get_local args test.globals; code = co} }
+    {(Hashtbl.add funTable i t; {name = i; params = args; return = t; locals = get_local args test.globals; code = co} ) }
 ;
 
 
@@ -122,9 +122,9 @@ param2:
 param:
 | { [] }
 | t = TYPE i = IDENT
-  { [(i,t,0)] }
+  { [(i,t)] }
 | t = TYPE i = IDENT VIRG p = param
-  { (i,t,0)::p }
+  { (i,t)::p }
 ;
 
 

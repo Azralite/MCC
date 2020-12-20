@@ -37,26 +37,27 @@ and seq = instr list
 
 type fun_def = {
   name:   string;
-  params: (string * typ * int) list;
+  params: (string * typ) list;
   return: typ;
-  locals: (string * typ * int) list;
+  locals: (string * typ) list;
   code:   seq;
 }
 
 type prog = {
-  globals:   (string * typ * int) list;
+  globals:   (string * typ) list;
   functions: fun_def list;
 }
 
 
-let tt = Hashtbl.create 42
+let funTable = Hashtbl.create 42
+let varTable = Hashtbl.create 42
 
 
 let rec expr_type e  =
   match e with
   | Cst _ -> Int
-  | Get e -> if Hashtbl.mem tt e then Hashtbl.find tt e else raise VarNotFound
-  |  Call(str, _) -> if Hashtbl.mem tt str then Hashtbl.find tt str else raise FunNotFound 
+  | Get e -> if Hashtbl.mem varTable e then Hashtbl.find varTable e else raise VarNotFound
+  | Call(str, _) -> if Hashtbl.mem funTable str then Hashtbl.find funTable str else raise FunNotFound
   | Binop (bn, e1 , e2) -> begin
     match bn with
       | Add
