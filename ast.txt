@@ -1,13 +1,22 @@
-Int PARAM 42
+Variables Globales :
+Int a 
+Int b 
+Int c 
+
+
+Fonctions :
 
 Nom : fact 
-Liste de parametre : Int n 0
+Liste de parametre : 
+Int n 
+
 Return : Int
-Locals : Int n 0
+Locals : Int n 
+
 Code : 
    If(expr, seq, seq)
       Lt(expr, expr)
-         Get n
+         Get a
                Cst 2 
             Return(expr)
                    Cst 1 
@@ -15,11 +24,12 @@ Code :
                         Mul(expr, expr)
                             Get n
                                   Call(fact,expr list)
-                                            Add(expr, expr)
+                                            Sub(expr, expr)
                                                 Get n
-                                                      Cst -1 
+                                                      Cst 1 
 Nom : main 
 Liste de parametre : 
+
 Return : Void
 Locals : 
 Code : 
