@@ -18,9 +18,9 @@
 }
 
 let alpha = ['a'-'z' 'A'-'Z']
-let digit = '-'? ['0'-'9']+
+let nombre = '-'? ['0'-'9']+
 let ident =
-  (alpha | digit) (alpha | digit | '_')*
+  (alpha) (alpha | nombre | '_')*
 
 let type = "int" | "bool" | "void"
 
@@ -41,25 +41,22 @@ rule token = parse
       { comment lexbuf; token lexbuf }
   | "//"
       { comment_line lexbuf; token lexbuf}
-  (*
-   | "true"
-      {TRUE}
-  | "false"
-      {FALSE}
-      *)
-  | digit as n
+  | nombre as n
       {CST(int_of_string n) }
   | ident as id
       {keyword_or_ident id }
   | '+'   {  PLUS }
   | '*'   {  ETOILE }
+  | '-'   { MOINS }
+  | '/'   {  DIVISION }
   | '='   {  EGAL }
+  | "!="  { INEGAL}
   | '<'   {  INF }
-  (*
-  | "&&"  { ET }
-  | "||"  { OU }
-  | "->"  { FLECHE }
-  *)
+  | '>'   {  SUP }
+  | "<="   {  INFEGAL }
+  | ">="   {  SUPEGAL }
+  | "||"  {OR}
+  | "&&"  { AND }
   | '('   {  PAR_O }
   | ')'   {  PAR_F }
   | ';'   {  SEMI }
