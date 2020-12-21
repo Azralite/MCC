@@ -17,6 +17,10 @@ You must change the Makefile in order to aply it on your file.
 
 This project use a lexer and a parser to change a simple .c file into a [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
 
+### Known Bugs
+
+:warning: You cannot use negative integer, in order to use (-n) you must write (0-n)
+
 
 ### TODO
 

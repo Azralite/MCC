@@ -2,16 +2,10 @@
   open Ast
 
 
-
-  let test = { globals = []; functions = [] }
-
-  let h = Hashtbl.create 42
-
-
-let fun_declaration id ty args =
+(*let fun_declaration id ty args =
   let tmp = Hashtbl.create 42 in
   tmp = Hashtbl.copy h
-
+*)
 
 %}
 
@@ -46,34 +40,28 @@ prog:
     {(ajoute_glob p v) }
 | f = fun_decl p=prog
     { (ajoute_fun p f) }
-| FIN { test }
+| FIN { {globals = []; functions = []} }
 | error
-    { let pos = $startpos in
-      let message = Printf.sprintf
-        "échec à la Ligne: %d, caractere : %d"
-        pos.pos_lnum
-        (pos.pos_cnum - pos.pos_bol)
-      in
-      failwith message }
+    { let message = Printf.sprintf "Erreur de syntax" in
+      raise (ErrorSyntax( message))}
 ;
 
 (* A variable is made with a type an id and we can asign it a value and end with a semicolon*)
 var_decl:
 | t=TYPE i=IDENT EGAL e=expr SEMI
     {  if expr_type e = t
-      then
-        begin Hashtbl.add varTable i t; (i,t) end
-      else failwith "erreur wrong type" }
+      then ( Hashtbl.add varGlobalTable i t; (i,t))
+      else raise (Ast.ErrorSyntax ("Wrong type"))  }
 | t=TYPE i=IDENT SEMI
-    { (Hashtbl.add varTable i t ;(i,t)) }
+    { (Hashtbl.add varGlobalTable i t ;(i,t)) }
 ;
 
 (* A function is made with a type an id opening parenthese some parameters closing parenthesis and all the code is between two curly brakets *)
 fun_decl:
 | t=TYPE i=IDENT PAR_O args=param PAR_F ACC_O co=list(instr) ACC_F
-    {(Hashtbl.add funTable i t; {name = i; params = args; return = t; locals = get_local args test.globals; code = co} ) }
+    {let fun_res = {name = i; params = args; return = t; locals = hashtbl_to_list varLocalTable; code = co} in
+    (Hashtbl.clear varLocalTable;Hashtbl.add funTable i t;  fun_res ) }
 ;
-
 
 (* instr represent what can be in a function*)
 instr:
@@ -82,24 +70,31 @@ instr:
   {Return e}
 (* IF ELSE instr *)
 | IF PAR_O c=expr PAR_F ACC_O e1=list(instr) ACC_F ELSE ACC_O  e2=list(instr) ACC_F
-    { if expr_type c = Bool then If(c, e1, e2) else failwith "If condition not respected"   }
+    { if expr_type c = Bool then If(c, e1, e2) else
+      let message = Printf.sprintf "If condition not respected caractere"  in
+      raise (Ast.ErrorSyntax (message)) }
+
 (* WHILE instr *)
 | WHILE PAR_O c=expr PAR_F ACC_O e=list(instr) ACC_F
-  { if expr_type c = Bool then While(c, e) else failwith "While condition not respected" }
+  { if expr_type c = Bool then While(c, e) else raise (Ast.ErrorSyntax ("While condition not respected"))  }
 (* Print an expr*)
 | PRINT PAR_O e=expr PAR_F SEMI
     {Putchar e}
 (* Set an variable with an value (from an expr)*)
 | i=IDENT EGAL e=expr SEMI
-  { let a = Get(i) in if expr_type a = (expr_type e) then (set_var i e h; Set(i,e)) else failwith "Variable inconnue" }
+  { let a = Get(i) in if expr_type a = (expr_type e) then ((*set_var i e varGlobalTable;*) Set(i,e)) else raise (Ast.ErrorSyntax ("Variable inconnue"))  }
 (* Manque la déclaration d'une nouvelle variable local*)
-
+| t=TYPE i= IDENT EGAL e=expr SEMI
+  { (Hashtbl.add varLocalTable i t); Set(i,e)}
+| t=TYPE i= IDENT SEMI
+  { (Hashtbl.add varLocalTable i t); Set(i, Cst(0))}
 ;
 
 (*expr_simple is made of cst var and expr between parenthesis  *)
 expr_simple:
 | n=CST   { Cst n }
-| x=IDENT   { Get x }
+| x=IDENT   {  if Hashtbl.mem varLocalTable x then Get x else
+  if Hashtbl.mem varGlobalTable x then Get(x) else  (Printf.printf "%s" x; raise VarNotFound) }
 | PAR_O e=expr PAR_F   { e }
 ;
 
@@ -122,13 +117,13 @@ param2:
 param:
 | { [] }
 | t = TYPE i = IDENT
-  { [(i,t)] }
+  { Hashtbl.add varLocalTable i t ;[(i,t)] }
 | t = TYPE i = IDENT VIRG p = param
-  { (i,t)::p }
+  { Hashtbl.add varLocalTable i t ; (i,t)::p }
 ;
 
 
-(*binop can be use later in order to simplify expr*)
+(*binop is use in order to simplify expr*)
 
 %inline binop:
 | PLUS    { Add }
