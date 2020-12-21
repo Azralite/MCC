@@ -120,12 +120,6 @@ let get_local l1 l2 =
   in gl l1 l2 []
 
 
-let rec find_env str li =
-  match li with
-  | [] -> raise Not_found
-  | hd::tl -> let (s,t,i) = hd in
-    if str = s then i else find_env str tl
-
 let rec eval expr env =
   match expr with
   | Cst n -> n

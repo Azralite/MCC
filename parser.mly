@@ -28,6 +28,7 @@
 %left INF SUP EGAL SUPEGAL INFEGAL INEGAL
 %left PLUS MOINS
 %left ETOILE DIVISION
+%nonassoc UMINUS
 
 %start prog
 %type <Ast.prog> prog
@@ -82,10 +83,13 @@ instr:
     {Putchar e}
 (* Set an variable with an value (from an expr)*)
 | i=IDENT EGAL e=expr SEMI
-  { let a = Get(i) in if expr_type a = (expr_type e) then ((*set_var i e varGlobalTable;*) Set(i,e)) else raise (Ast.ErrorSyntax ("Variable inconnue"))  }
-(* Manque la déclaration d'une nouvelle variable local*)
+  { let a = Get(i) in
+    if Hashtbl.mem varLocalTable i then begin
+     if expr_type a = (expr_type e) then Set(i,e) else raise (Ast.ErrorSyntax ("Unmatching type")) end
+   else raise   (Ast.ErrorSyntax ("Variable inconnue"))}
+(* Déclaration d'une nouvelle variable local*)
 | t=TYPE i= IDENT EGAL e=expr SEMI
-  { (Hashtbl.add varLocalTable i t); Set(i,e)}
+  { (Hashtbl.add varLocalTable i t);  Set(i,e)}
 | t=TYPE i= IDENT SEMI
   { (Hashtbl.add varLocalTable i t); Set(i, Cst(0))}
 ;
@@ -93,6 +97,7 @@ instr:
 (*expr_simple is made of cst var and expr between parenthesis  *)
 expr_simple:
 | n=CST   { Cst n }
+| MOINS n=CST %prec UMINUS {Cst (-n)}
 | x=IDENT   {  if Hashtbl.mem varLocalTable x then Get x else
   if Hashtbl.mem varGlobalTable x then Get(x) else  (Printf.printf "%s" x; raise VarNotFound) }
 | PAR_O e=expr PAR_F   { e }

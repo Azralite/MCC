@@ -1,6 +1,7 @@
 
 FLAGS = -use-menhir
 
+
 OCB = ocamlbuild $(FLAGS)
 
 all : native
