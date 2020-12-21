@@ -1,6 +1,7 @@
 
 FLAGS = -use-menhir
 
+
 OCB = ocamlbuild $(FLAGS)
 
 all : native
@@ -12,4 +13,6 @@ clean:
 	$(OCB) -clean
 
 test : native
-	./main.native test.c
+	./main.native tests/fact.c
+	./main.native tests/fibo.c
+

@@ -8,14 +8,19 @@ This project allow you to compile some of C functionality
 ```bash
 git clone https://github.com/Azralite/Mini-C_Compiler.git
 cd Mini-C_Compiler
-make test
+make
 ```
 
 ### How it works
 
-You must change the Makefile in order to aply it on your file.
+```make``` will produce a main.native file
+use ``` ./main.native yourFile.c``` and it will produce a yourFile_ast.txt file with the visual representation of the AST
 
 This project use a lexer and a parser to change a simple .c file into a [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
+
+### Known Bugs
+
+~:warning: You cannot use negative integer, in order to use (-n) you must write (0-n)~ FIXED
 
 
 ### TODO

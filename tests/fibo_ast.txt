@@ -1,5 +1,4 @@
 Variables Globales :
-Int n 
 
 
 Fonctions :
@@ -22,12 +21,7 @@ Code :
                         Cst 1 
             Return(expr)
                    Cst 1 
-                 Printchar(expr)
-                           Add(expr, expr)
-                               Call(fibo,expr list)
-                                         Cst 4 
-                                     Cst 1 
-Return(expr)
+                 Return(expr)
                         Add(expr, expr)
                             Call(fibo,expr list)
                                       Sub(expr, expr)

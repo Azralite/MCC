@@ -4,6 +4,7 @@ exception TypeError
 exception VarNotFound
 exception FunNotFound
 exception DivisionParZero
+exception ErrorSyntax of string
 
 
 type typ =
@@ -50,13 +51,20 @@ type prog = {
 
 
 let funTable = Hashtbl.create 42
-let varTable = Hashtbl.create 42
+let varGlobalTable = Hashtbl.create 42
+
+let varLocalTable =  Hashtbl.create 42
+
+let _ = Hashtbl.add varLocalTable "a" Int; Hashtbl.clear varLocalTable
+let _ = Hashtbl.add varGlobalTable "a" Int; Hashtbl.clear varGlobalTable
+
 
 
 let rec expr_type e  =
   match e with
   | Cst _ -> Int
-  | Get e -> if Hashtbl.mem varTable e then Hashtbl.find varTable e else raise VarNotFound
+  | Get e -> if Hashtbl.mem varLocalTable e then Hashtbl.find varLocalTable e else
+    if Hashtbl.mem varGlobalTable e then Hashtbl.find varGlobalTable e else raise VarNotFound
   | Call(str, _) -> if Hashtbl.mem funTable str then Hashtbl.find funTable str else raise FunNotFound
   | Binop (bn, e1 , e2) -> begin
     match bn with
@@ -112,12 +120,6 @@ let get_local l1 l2 =
   in gl l1 l2 []
 
 
-let rec find_env str li =
-  match li with
-  | [] -> raise Not_found
-  | hd::tl -> let (s,t,i) = hd in
-    if str = s then i else find_env str tl
-
 let rec eval expr env =
   match expr with
   | Cst n -> n
@@ -143,6 +145,23 @@ let rec eval expr env =
 
 
 let set_var i e env = Hashtbl.replace env i e
+
+
+let param_to_local li =
+  let rec ptl l =
+    match l with
+    | [] -> ()
+    | hd::tl -> Hashtbl.add varLocalTable (fst hd) (snd hd); ptl tl
+in ptl li
+
+let hashtbl_to_list has =
+  let rec htl h res =
+    let f = (fun str typ lis -> (str,typ)::lis) in
+    Hashtbl.fold f h res
+  in htl has []
+
+
+
 (*
 let rec eval_instr instr env =
   match instr with

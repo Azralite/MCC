@@ -18,7 +18,7 @@
 }
 
 let alpha = ['a'-'z' 'A'-'Z']
-let nombre = '-'? ['0'-'9']+
+let nombre = ['0'-'9']+
 let ident =
   (alpha) (alpha | nombre | '_')*
 
